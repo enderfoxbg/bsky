@@ -7,7 +7,7 @@
     "build:linux": "electron-builder --linux -p always",
     "build:win": "electron-builder --win -p always",
     "build:mac": "electron-builder --mac -p always",
-    "build:all": "electron-builder -mwl",
+    "build:all": "electron-builder -wl",
     "publish": "electron-builder -p always"
   },
   "keywords": [],
