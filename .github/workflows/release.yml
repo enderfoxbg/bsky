@@ -6,7 +6,10 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -19,4 +22,12 @@ jobs:
       - name: Build and Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run publish
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            npm run build:linux
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+            npm run build:win
+          else
+            npm run build:mac
+          fi
+        shell: bash

@@ -4,11 +4,11 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build:linux": "electron-builder --linux AppImage",
-    "build:win": "electron-builder --win",
-    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux -p always",
+    "build:win": "electron-builder --win -p always",
+    "build:mac": "electron-builder --mac -p always",
     "build:all": "electron-builder -mwl",
-    "publish": "electron-builder --linux AppImage -p always"
+    "publish": "electron-builder -p always"
   },
   "keywords": [],
   "author": "WinStuff <justwinstuff@gmail.com>",
