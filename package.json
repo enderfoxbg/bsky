@@ -1,0 +1,64 @@
+{
+  "name": "bsky",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:linux": "electron-builder --linux",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:all": "electron-builder -mwl",
+    "publish": "electron-builder -p always"
+  },
+  "keywords": [],
+  "author": "WinStuff",
+  "license": "GPL-3.0",
+  "type": "commonjs",
+  "description": "An unofficial desktop client for Bluesky.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/enderfoxbg/bsky.git"
+  },
+  "build": {
+    "appId": "com.winstuff.bsky",
+    "productName": "Bluesky Desktop",
+    "directories": {
+      "output": "dist"
+    },
+    "publish": [{
+      "provider": "github",
+      "owner": "enderfoxbg",
+      "repo": "bsky"
+    }],
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm"
+      ],
+      "category": "Network",
+      "icon": "icons",
+      "publish": ["github"]
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "icons/icon.ico",
+      "publish": ["github"]
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "icons/icon.png",
+      "category": "public.app-category.social-networking",
+      "publish": ["github"]
+    }
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^24.13.3"
+  },
+  "dependencies": {
+    "electron-store": "^8.1.0",
+    "electron-updater": "^6.1.8",
+    "electron-window-state": "^5.0.3"
+  }
+}
