@@ -11,10 +11,7 @@
     "publish": "electron-builder -p always"
   },
   "keywords": [],
-  "author": {
-    "name": "WinStuff",
-    "email": "justwinstuff@gmail.com"
-  },
+  "author": "WinStuff <justwinstuff@gmail.com>",
   "license": "GPL-3.0",
   "type": "commonjs",
   "description": "An unofficial desktop client for Bluesky.",
