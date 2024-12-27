@@ -11,7 +11,10 @@
     "publish": "electron-builder -p always"
   },
   "keywords": [],
-  "author": "WinStuff",
+  "author": {
+    "name": "WinStuff",
+    "email": "justwinstuff@gmail.com"
+  },
   "license": "GPL-3.0",
   "type": "commonjs",
   "description": "An unofficial desktop client for Bluesky.",
@@ -38,7 +41,10 @@
       ],
       "category": "Network",
       "icon": "icons",
-      "publish": ["github"]
+      "publish": ["github"],
+      "maintainer": "WinStuff <justwinstuff@gmail.com>",
+      "vendor": "WinStuff",
+      "synopsis": "Unofficial Bluesky Desktop Client"
     },
     "win": {
       "target": "nsis",
