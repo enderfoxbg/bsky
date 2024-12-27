@@ -4,11 +4,11 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build:linux": "electron-builder --linux",
+    "build:linux": "electron-builder --linux AppImage",
     "build:win": "electron-builder --win",
     "build:mac": "electron-builder --mac",
     "build:all": "electron-builder -mwl",
-    "publish": "electron-builder -p always"
+    "publish": "electron-builder --linux AppImage -p always"
   },
   "keywords": [],
   "author": "WinStuff <justwinstuff@gmail.com>",
@@ -31,17 +31,10 @@
       "repo": "bsky"
     }],
     "linux": {
-      "target": [
-        "AppImage",
-        "deb",
-        "rpm"
-      ],
+      "target": ["AppImage"],
       "category": "Network",
       "icon": "icons",
-      "publish": ["github"],
-      "maintainer": "WinStuff <justwinstuff@gmail.com>",
-      "vendor": "WinStuff",
-      "synopsis": "Unofficial Bluesky Desktop Client"
+      "publish": ["github"]
     },
     "win": {
       "target": "nsis",
