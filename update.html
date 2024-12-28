@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Updates — Bluesky</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: transparent;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        @media (prefers-color-scheme: light) {
+            body {
+                color: #1c1c1c;
+                background-color: #ffffff;
+            }
+            .update-available {
+                background-color: #f0f0f0;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                color: #ffffff;
+                background-color: #1c1c1c;
+            }
+            .update-available {
+                background-color: #2c2c2c;
+            }
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 24px;
+            border-radius: 16px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+        }
+
+        .version {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-bottom: 32px;
+        }
+
+        .update-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            background: #1184ff;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+            min-width: 150px;
+        }
+
+        .update-btn:hover {
+            background: #0066cc;
+        }
+
+        .update-btn.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .update-btn.loading::after {
+            content: "";
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin: -8px 0 0 -8px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-right-color: transparent;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .status {
+            margin: 20px 0;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status.success {
+            color: #4caf50;
+        }
+
+        .update-available {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <img src="icons/icon.png" class="logo" alt="Bluesky Logo">
+    <h1>Bluesky Desktop</h1>
+    <div class="version">Ver. <span id="currentVersion"></span></div>
+    <button id="checkButton" class="update-btn">Check for Updates</button>
+    <div id="status" class="status"></div>
+    <div id="updateAvailable" class="update-available" style="display: none;"></div>
+
+    <script>
+        const checkButton = document.getElementById('checkButton');
+        const status = document.getElementById('status');
+        const updateAvailable = document.getElementById('updateAvailable');
+        
+        // Set current version on load
+        window.electron.getCurrentVersion().then(version => {
+            document.getElementById('currentVersion').textContent = version;
+        });
+
+        let isChecking = false;
+
+        checkButton.addEventListener('click', async () => {
+            if (isChecking) return;
+            
+            isChecking = true;
+            checkButton.classList.add('loading');
+            status.textContent = '';
+            status.className = 'status';
+            updateAvailable.style.display = 'none';
+
+            try {
+                const result = await window.electron.checkForUpdates();
+                
+                if (result.updateAvailable) {
+                    updateAvailable.style.display = 'block';
+                    updateAvailable.textContent = `Version ${result.version} available`;
+                    checkButton.textContent = 'Update Now';
+                    checkButton.onclick = () => {
+                        window.electron.startUpdate();
+                    };
+                } else {
+                    status.classList.add('success');
+                    status.innerHTML = '✓ You have the latest version';
+                    checkButton.textContent = 'Check for Updates';
+                }
+            } catch (error) {
+                status.textContent = 'Error checking for updates';
+            } finally {
+                isChecking = false;
+                checkButton.classList.remove('loading');
+            }
+        });
+    </script>
+</body>
+</html> 

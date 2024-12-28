@@ -81,7 +81,7 @@
 <body>
     <img src="icons/icon.png" class="logo" alt="Bluesky Logo">
     <h1>Bluesky Desktop</h1>
-    <div class="version">Ver. 1.0.1</div>
+    <div class="version">Ver. <span id="currentVersion"></span></div>
     <div class="description">
         An unofficial desktop client for Bluesky
     </div>
@@ -89,5 +89,11 @@
         Created by <a href="https://github.com/enderfoxbg">WinStuff</a><br>
         Not affiliated with Bluesky Social PBC.
     </div>
+
+    <script>
+        window.electron.getCurrentVersion().then(version => {
+            document.getElementById('currentVersion').textContent = version;
+        });
+    </script>
 </body>
 </html> 

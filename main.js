@@ -1,4 +1,12 @@
+process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = true
+process.env.ELECTRON_ENABLE_LOGGING = false
+
 const { app, BrowserWindow, Tray, Menu, Notification, ipcMain } = require('electron')
+if (!app.isPackaged) {
+    process.stdout.write = () => {}
+    process.stderr.write = () => {}
+}
+
 const path = require('path')
 const Store = require('electron-store')
 const windowStateKeeper = require('electron-window-state')
@@ -8,6 +16,7 @@ const store = new Store()
 let tray = null
 let mainWindow = null
 let aboutWindow = null
+let updateWindow = null
 if (store.get('minimizeToTray') === undefined) {
   store.set('minimizeToTray', true)
 }
@@ -26,9 +35,9 @@ function minimizeNotification() {
 }
 
 function createWindow() {
-  let mainWindowState = windowStateKeeper({
-    defaultWidth: 1200,
-    defaultHeight: 800
+  const mainWindowState = windowStateKeeper({
+    defaultWidth: 1280,
+    defaultHeight: 720
   })
 
   mainWindow = new BrowserWindow({
@@ -37,20 +46,37 @@ function createWindow() {
     width: mainWindowState.width,
     height: mainWindowState.height,
     autoHideMenuBar: true,
-    title: "Bluesky",
+    title: 'Loading — Bluesky',
     icon: path.join(__dirname, 'icons', process.platform === 'win32' ? 'icon.ico' : 'icon.png'),
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js'),
-      contextIsolation: true,
-      webSecurity: true,
-      enableWebSQL: false,
-      contextMenuEnabled: true
+      webSecurity: true
     }
   })
-  mainWindowState.manage(mainWindow)
+  mainWindow.webContents.session.webRequest.onBeforeSendHeaders(
+    { urls: ['https://bsky.app/static/media/InterVariable*.woff2'] },
+    (details, callback) => {
+      callback({
+        requestHeaders: {
+          ...details.requestHeaders,
+          'Sec-Fetch-Mode': 'cors',
+          'Sec-Fetch-Dest': 'font',
+          'Sec-Fetch-Site': 'same-origin',
+          'credentials': 'omit',
+          'mode': 'cors'
+        }
+      })
+    }
+  )
+  if (process.platform === 'linux') {
+    app.on('ready', () => {
+      process.env.XDG_CURRENT_DESKTOP = 'Unity'
+    })
+  }
+
   mainWindow.loadURL('https://bsky.app')
+  mainWindowState.manage(mainWindow)
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.webContents.insertCSS(`
       body {
@@ -146,6 +172,15 @@ function createTray() {
     },
     { type: 'separator' },
     {
+      label: 'Check for Updates',
+      click: () => {
+        if (!updateWindow) {
+          createUpdateWindow()
+        }
+      }
+    },
+    { type: 'separator' },
+    {
       label: 'Quit',
       click: () => {
         app.isQuitting = true
@@ -176,7 +211,8 @@ function createAboutWindow() {
     icon: path.join(__dirname, 'icons', process.platform === 'win32' ? 'icon.ico' : 'icon.png'),
     webPreferences: {
       nodeIntegration: false,
-      contextIsolation: true
+      contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js')
     }
   })
 
@@ -187,38 +223,65 @@ function createAboutWindow() {
   })
 }
 
+function createUpdateWindow() {
+    updateWindow = new BrowserWindow({
+        width: 400,
+        height: 300,
+        autoHideMenuBar: true,
+        parent: mainWindow,
+        modal: true,
+        resizable: false,
+        minimizable: false,
+        maximizable: false,
+        backgroundColor: '#00000000',
+        icon: path.join(__dirname, 'icons', process.platform === 'win32' ? 'icon.ico' : 'icon.png'),
+        webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+            preload: path.join(__dirname, 'preload.js')
+        }
+    })
+
+    updateWindow.loadFile('update.html')
+    mainWindow.on('close', () => {
+        if (updateWindow) {
+            updateWindow.close()
+        }
+    })
+
+    updateWindow.on('closed', () => {
+        updateWindow = null
+    })
+}
+
 function checkForUpdates() {
-    autoUpdater.logger = require("electron-log")
-    autoUpdater.logger.transports.file.level = "info"
-    
-    // Force notification display
-    autoUpdater.forceDevUpdateConfig = true
-    
-    autoUpdater.on('update-available', (info) => {
-        if (store.get('enableNotifications')) {
-            new Notification({
-                title: 'Update Available',
-                body: `Version ${info.version} is available. Downloading...`,
-                icon: path.join(__dirname, 'icons', process.platform === 'win32' ? 'icon.ico' : 'icon.png')
-            }).show()
-        }
-    })
-  
-    autoUpdater.on('update-downloaded', (info) => {
-        if (store.get('enableNotifications')) {
-            new Notification({
-                title: 'Update Ready',
-                body: `Version ${info.version} will be installed on restart`,
-                icon: path.join(__dirname, 'icons', process.platform === 'win32' ? 'icon.ico' : 'icon.png')
-            }).show()
-        }
-        
-        setTimeout(() => {
-            autoUpdater.quitAndInstall()
-        }, 5000)
-    })
-  
-    autoUpdater.checkForUpdatesAndNotify()
+    if (app.isPackaged) {
+        autoUpdater.on('update-available', (info) => {
+            if (store.get('enableNotifications')) {
+                new Notification({
+                    title: 'Update Available',
+                    body: `Version ${info.version} is available. Downloading...`,
+                    icon: path.join(__dirname, 'icons', process.platform === 'win32' ? 'icon.ico' : 'icon.png')
+                }).show()
+            }
+        })
+      
+        autoUpdater.on('update-downloaded', (info) => {
+            if (store.get('enableNotifications')) {
+                new Notification({
+                    title: 'Update Ready',
+                    body: `Version ${info.version} will be installed on restart`,
+                    icon: path.join(__dirname, 'icons', process.platform === 'win32' ? 'icon.ico' : 'icon.png')
+                }).show()
+            }
+            
+            setTimeout(() => {
+                autoUpdater.quitAndInstall()
+            }, 5000)
+        })
+      
+        autoUpdater.checkForUpdatesAndNotify()
+    }
 }
 
 if (process.platform === 'darwin') {
@@ -253,3 +316,31 @@ ipcMain.on('show-notification', (_, { title, body }) => {
   }
 })
 
+ipcMain.handle('get-current-version', () => {
+    return app.getVersion()
+})
+
+ipcMain.handle('check-for-updates', async () => {
+    if (!app.isPackaged) return { updateAvailable: false }
+    
+    try {
+        const result = await autoUpdater.checkForUpdates()
+        return {
+            updateAvailable: result?.updateInfo?.version !== app.getVersion(),
+            version: result?.updateInfo?.version
+        }
+    } catch (error) {
+        return { updateAvailable: false, error: error.message }
+    }
+})
+
+ipcMain.handle('start-update', () => {
+    if (store.get('enableNotifications')) {
+        new Notification({
+            title: 'Updating Bluesky Desktop',
+            body: 'The app will restart when the update is ready.',
+            icon: path.join(__dirname, 'icons', process.platform === 'win32' ? 'icon.ico' : 'icon.png')
+        }).show()
+    }
+    autoUpdater.quitAndInstall()
+})

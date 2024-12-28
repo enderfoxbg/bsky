@@ -20,21 +20,30 @@
     "url": "https://github.com/enderfoxbg/bsky.git"
   },
   "build": {
-    "appId": "com.winstuff.bsky",
-    "productName": "Bluesky Desktop",
+    "appId": "com.bluesky.desktop",
+    "productName": "Bluesky",
     "directories": {
       "output": "dist"
     },
-    "publish": [{
-      "provider": "github",
-      "owner": "enderfoxbg",
-      "repo": "bsky"
-    }],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "enderfoxbg",
+        "repo": "bsky"
+      }
+    ],
     "linux": {
-      "target": ["AppImage"],
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm",
+        "pacman"
+      ],
       "category": "Network",
       "icon": "icons",
-      "publish": ["github"]
+      "publish": ["github"],
+      "maintainer": "WinStuff <justwinstuff@gmail.com>",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
     "win": {
       "target": "nsis",
