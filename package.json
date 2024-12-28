@@ -4,7 +4,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build:linux": "electron-builder --linux -p always",
+    "build:linux": "electron-builder --linux AppImage deb pacman -p always",
     "build:win": "electron-builder --win -p always",
     "build:mac": "electron-builder --mac -p always",
     "build:all": "electron-builder -wl",
