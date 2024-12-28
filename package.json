@@ -36,7 +36,6 @@
       "target": [
         "AppImage",
         "deb",
-        "rpm",
         "pacman"
       ],
       "category": "Network",
