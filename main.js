@@ -191,28 +191,35 @@ function checkForUpdates() {
     autoUpdater.logger = require("electron-log")
     autoUpdater.logger.transports.file.level = "info"
     
-    autoUpdater.on('update-available', () => {
-      new Notification({
-        title: 'Update Available',
-        body: 'Downloading new version...',
-        icon: path.join(__dirname, 'icons', process.platform === 'win32' ? 'icon.ico' : 'icon.png')
-      }).show()
+    // Force notification display
+    autoUpdater.forceDevUpdateConfig = true
+    
+    autoUpdater.on('update-available', (info) => {
+        if (store.get('enableNotifications')) {
+            new Notification({
+                title: 'Update Available',
+                body: `Version ${info.version} is available. Downloading...`,
+                icon: path.join(__dirname, 'icons', process.platform === 'win32' ? 'icon.ico' : 'icon.png')
+            }).show()
+        }
     })
   
-    autoUpdater.on('update-downloaded', () => {
-      new Notification({
-        title: 'Update Ready',
-        body: 'Application will restart to install update...',
-        icon: path.join(__dirname, 'icons', process.platform === 'win32' ? 'icon.ico' : 'icon.png')
-      }).show()
-      
-      setTimeout(() => {
-        autoUpdater.quitAndInstall()
-      }, 5000)
+    autoUpdater.on('update-downloaded', (info) => {
+        if (store.get('enableNotifications')) {
+            new Notification({
+                title: 'Update Ready',
+                body: `Version ${info.version} will be installed on restart`,
+                icon: path.join(__dirname, 'icons', process.platform === 'win32' ? 'icon.ico' : 'icon.png')
+            }).show()
+        }
+        
+        setTimeout(() => {
+            autoUpdater.quitAndInstall()
+        }, 5000)
     })
   
     autoUpdater.checkForUpdatesAndNotify()
-  }
+}
 
 if (process.platform === 'darwin') {
   app.dock.setIcon(path.join(__dirname, 'icons', 'icon.png'))
