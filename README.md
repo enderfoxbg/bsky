@@ -3,7 +3,7 @@
 
 <p>An unofficial desktop client for Bluesky, made using Electron.</p>
 
-[![Download](https://gist.githubusercontent.com/cxmeel/0dbc95191f239b631c3874f4ccf114e2/raw/download.svg)](https://gist.github.com/cxmeel/)
+[![Download](https://gist.githubusercontent.com/cxmeel/0dbc95191f239b631c3874f4ccf114e2/raw/download.svg)](https://github.com/enderfoxbg/bsky?tab=readme-ov-file#installation)
 </div>
 
 ![Preview](https://raw.githubusercontent.com/enderfoxbg/bsky/refs/heads/main/imgs/preview.png)
