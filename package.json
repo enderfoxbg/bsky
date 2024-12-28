@@ -8,7 +8,8 @@
     "build:win": "electron-builder --win -p always",
     "build:mac": "electron-builder --mac -p always",
     "build:all": "electron-builder -wl",
-    "publish": "electron-builder -wl -p always"
+    "publish": "electron-builder -wl -p always",
+    "build:aur": "electron-builder --linux pacman --publish never"
   },
   "keywords": [],
   "author": "WinStuff <justwinstuff@gmail.com>",
