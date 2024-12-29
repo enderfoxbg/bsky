@@ -36,7 +36,7 @@ You can install this app using our [AUR Package](https://aur.archlinux.org/packa
 ```bash
 yay -S bsky-desktop
 ```
-Alternatively, you can use the **appimage** by going to the [Releases](https://github.com/enderfoxbg/bsky/releases/latest) and downloading the **.appimage** file.
+Alternatively, you can use the **appimage** by going to [Releases](https://github.com/enderfoxbg/bsky/releases/latest) and downloading the **.appimage** file.
 
 ## Contribute
 Want to improve Bluesky Desktop or help with its development? Simply create a [Pull Request](https://github.com/enderfoxbg/bsky/pulls) to get started!
