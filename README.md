@@ -1,3 +1,6 @@
+# ⚠️⚠️ Bluesky Desktop has been discontinued. ⚠️⚠️
+### We do not recommend using this.
+
 <div align="center">
 <h1>Bluesky Desktop</h1>
 
