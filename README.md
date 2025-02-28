@@ -29,7 +29,7 @@ Cuztomize options like notifications using the Tray menu.
 Go to [Releases](https://github.com/enderfoxbg/bsky/releases/latest) and Download the **.exe** file.
 
 ### Mac OS
-*Coming soon...*
+*Not supported*
 
 ### Debian, Ubuntu, Mint
 Go to [Releases](https://github.com/enderfoxbg/bsky/releases/latest) and download the **.deb** or **.appimage** file. The **appimage** doesn't require installation.
