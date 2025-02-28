@@ -34,12 +34,4 @@ Go to [Releases](https://github.com/enderfoxbg/bsky/releases/latest) and Downloa
 ### Debian, Ubuntu, Mint
 Go to [Releases](https://github.com/enderfoxbg/bsky/releases/latest) and download the **.deb** or **.appimage** file. The **appimage** doesn't require installation.
 
-### Arch, Manjaro, EndeavourOS
-You can install this app using our [AUR Package](https://aur.archlinux.org/packages/bsky-desktop). Just open your terminal, and run:
-```bash
-yay -S bsky-desktop
-```
 Alternatively, you can use the **appimage** by going to [Releases](https://github.com/enderfoxbg/bsky/releases/latest) and downloading the **.appimage** file.
-
-## Contribute
-Want to improve Bluesky Desktop or help with its development? Simply create a [Pull Request](https://github.com/enderfoxbg/bsky/pulls) to get started!
